@@ -3,20 +3,28 @@
 
 
 
-check_nordcan_cancer_case_dataset <- function(x) {
-  check_col_nms <- c("sex", "region")
-  nordcancore:::assert_is_data_table_with_required_names(
+#' @importFrom easyassertions assert_is_data.table_with_required_names
+check_nordcan_cancer_case_dataset <- function(
+  x,
+  check_col_nms = nordcancore::nordcan_col_nms()
+) {
+  nordcancore::assert_is_set_of_nordcan_col_nms(test_col_nms)
+  easyassertions::assert_is_data.table_with_required_names(
     x,
     required_names = check_col_nms
   )
 
-  check_funs <- mget(paste0("check_", check_col_nms))
-  lapply(check_col_nms, function(col_nm) {
-    check_funs[[col_nm]](x[[col_nm]])
-  })
+  report <- report_on_nordcan_cancer_case_dataset(
+    x = x,
+    report_col_nms = check_col_nms
+  )
+  # TODO: go through the results, raise errors where tests do not pass
 
   invisible(NULL)
 }
+
+
+
 
 
 check_categorical_column <- function(values, col_nm = "sex") {
